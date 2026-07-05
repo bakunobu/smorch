@@ -1,1 +1,1 @@
-from src.models.base import Project, Subproject, Task, Tag  # noqa: F401
+from src.models.base import Project, Subproject, Tag, Task  # noqa: F401

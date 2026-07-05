@@ -2,7 +2,6 @@ from datetime import datetime, timezone
 
 from src.database import db
 
-
 tag_task_association = db.Table(
     "tag_task_association",
     db.Column("tag_id", db.Integer, db.ForeignKey("tags.id"), primary_key=True),
@@ -44,9 +43,7 @@ class Subproject(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, default="")
-    project_id = db.Column(
-        db.Integer, db.ForeignKey("projects.id"), nullable=False
-    )
+    project_id = db.Column(db.Integer, db.ForeignKey("projects.id"), nullable=False)
     created_at = db.Column(
         db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc)
     )
