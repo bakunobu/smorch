@@ -103,3 +103,34 @@ class Tag(db.Model):
 
     def __repr__(self):
         return f"<Tag {self.id}: {self.name}>"
+
+
+class User(db.Model):
+    """Application user with authentication fields."""
+
+    __tablename__ = "users"
+
+    id = db.Column(db.Integer, primary_key=True)  # auto-incremental PK
+
+    name = db.Column(db.String(150), nullable=False)  # full name
+
+    nickname = db.Column(
+        db.String(80), unique=True, nullable=False
+    )  # display/login name
+
+    email = db.Column(db.String(254), unique=True, nullable=False)  # email address
+
+    password_hash = db.Column(db.String(256), nullable=False)  # bcrypt/argon2 hash
+
+    created_dttm = db.Column(
+        db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc)
+    )
+
+    last_password_change_dttm = db.Column(
+        db.DateTime, nullable=True, default=lambda: datetime.now(timezone.utc)
+    )
+
+    is_deleted = db.Column(db.Boolean, default=False)  # logical deletion flag
+
+    def __repr__(self):
+        return f"<User {self.id}: {self.nickname}>"

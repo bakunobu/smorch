@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from flask import Flask
 
 from src.config import config_by_name
-from src.database import db, init_db
+from src.database import init_db
 from src.routes import health_bp
 
 load_dotenv()
