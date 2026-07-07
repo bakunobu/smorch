@@ -134,3 +134,51 @@ class User(db.Model):
 
     def __repr__(self):
         return f"<User {self.id}: {self.nickname}>"
+
+class Follow(db.Model):
+    __tablename__ = "follows"
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+        )
+    follower_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id"),
+        nullable=False
+        )
+    followed_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id"),
+        nullable=False
+        )
+    created_at = db.Column(
+        db.DateTime,
+        nullable=False,
+        default=lambda:datetime.now(timezone.utc)
+        )
+
+    __table_args__ = (
+        db.UniqueConstraint(
+            "follower_id",
+            "followed_id",
+            name="uq_follow_pair"
+            ),
+        db.Index(
+            "ix_follow_followed",
+            "followed_id"
+            ),
+        db.Index(
+            "ix_follow_follower",
+            "follower_id"
+            ),
+    )
+
+    follower = db.relationship(
+        "User",
+        foreign_keys=[follower_id], backref="following"
+        )
+    followed = db.relationship(
+        "User",
+        foreign_keys=[followed_id], backref="followers"
+        )
