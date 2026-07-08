@@ -16,6 +16,7 @@ class Project(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
+    is_private = db.Column(db.Boolean, default=True, nullable=False)
     description = db.Column(db.Text, default="")
     created_at = db.Column(
         db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc)
@@ -42,6 +43,7 @@ class Subproject(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
+    is_private = db.Column(db.Boolean, default=True, nullable=False)
     description = db.Column(db.Text, default="")
     project_id = db.Column(db.Integer, db.ForeignKey("projects.id"), nullable=False)
     created_at = db.Column(
@@ -69,6 +71,7 @@ class Task(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
+    is_private = db.Column(db.Boolean, default=True, nullable=False)
     description = db.Column(db.Text, default="")
     completed = db.Column(db.Boolean, default=False)
     priority = db.Column(db.Integer, default=0)
