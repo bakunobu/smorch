@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Smorch{% endblock %}
+{% block content %}
+
+<div class="dashboard-grid">
+
+    {# ── Block 1: Projects ── #}
+    <section class="block block-projects">
+        <h2>Projects</h2>
+        <div class="project-list">
+            {% for project in projects %}
+            <div class="project-card">
+                <h3>{{ project.title }}</h3>
+                <div class="project-stats">
+                    <span>{{ project_counts[project.id].task_count }} tasks</span>
+                    <span>{{ project_counts[project.id].completed_pct }}% done</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: {{ project_counts[project.id].completed_pct }}%"></div>
+                </div>
+            </div>
+            {% else %}
+            <p class="empty-state">No projects yet</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    {# ── Block 2: Workflow ── #}
+    <section class="block block-workflow">
+        <h2>Workflow</h2>
+        <div class="task-list">
+            {% for group in task_groups %}
+            <div class="task-group">
+                <h4>{{ group.project }} › {{ group.subproject }}</h4>
+                {% for task in group.tasks %}
+                <div class="task-item" data-task-id="{{ task.id }}">
+                    <span class="task-title">{{ task.title }}</span>
+                    {% if task.priority > 0 %}
+                    <span class="task-priority">P{{ task.priority }}</span>
+                    {% endif %}
+                    {% if task.deadline %}
+                    <span class="task-deadline">{{ task.deadline|reltime }}</span>
+                    {% endif %}
+                    {% if task.tags %}
+                    <div class="task-tags">
+                        {% for tag in task.tags %}
+                        <span class="tag">{{ tag.name }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <button class="btn-start-timer" data-task-id="{{ task.id }}">▶ Start</button>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="empty-state">No tasks available</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    {# ── Block 3: Timer + Stats + Log ── #}
+    <section class="block block-timer-stats-log">
+        <h2>Session</h2>
+        <div class="session-subgrid">
+
+            {# ── Timer ── #}
+            <div class="sub-col col-timer">
+                <div class="timer-display" id="timer-display">25:00</div>
+                <select id="timer-task-select">
+                    <option value="">— Break / No task —</option>
+                    {% for task in all_tasks %}
+                    <option value="{{ task.id }}">{{ task.title }}</option>
+                    {% endfor %}
+                </select>
+                <div class="timer-controls">
+                    <button id="btn-start">▶ Start</button>
+                    <button id="btn-pause">⏸ Pause</button>
+                    <button id="btn-reset">↺ Reset</button>
+                </div>
+            </div>
+
+            {# ── Stats ── #}
+            <div class="sub-col col-stats">
+                <div class="stat-row">
+                    <span class="stat-label">Completed today</span>
+                    <span class="stat-value">{{ stats.tasks_completed_today }}</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Time tracked</span>
+                    <span class="stat-value">{{ stats.time_tracked_today }}</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Streak</span>
+                    <span class="stat-value">{{ stats.current_streak }}d</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Total tasks</span>
+                    <span class="stat-value">{{ stats.total_tasks }}</span>
+                </div>
+            </div>
+
+            {# ── Log ── #}
+            <div class="sub-col col-log">
+                <ul class="log-feed" id="log-feed">
+                    {% for entry in log_entries %}
+                    <li class="log-entry log-{{ entry.action_type }}">
+                        <span class="log-icon">{{ log_icon(entry.action_type) }}</span>
+                        <span class="log-text">{{ entry.description }}</span>
+                        <span class="log-time">{{ entry.created_at|reltime }}</span>
+                    </li>
+                    {% else %}
+                    <li class="log-entry">
+                        <span class="log-text">No activity yet</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+        </div>
+    </section>
+
+</div>
+
+{% endblock %}

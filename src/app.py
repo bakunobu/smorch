@@ -5,7 +5,9 @@ from flask import Flask
 
 from src.config import config_by_name
 from src.database import init_db
+from src.models import ActivityLog, TimerSession  # noqa: F401 — ensure models are loaded
 from src.routes import health_bp
+from src.routes.dashboard import dashboard_bp
 
 load_dotenv()
 
@@ -23,5 +25,6 @@ def create_app(config_name=None):
 
     # Register blueprints
     app.register_blueprint(health_bp)
+    app.register_blueprint(dashboard_bp)
 
     return app
